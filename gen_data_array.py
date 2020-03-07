@@ -5,8 +5,6 @@ samples a random window of constant size from each file.  If all images are the 
 of the window, the entire image is saved.  The images are saved in grayscale and are
 the rows of a numpy array.  This numpy array is saved via pickle.
 
-This script supports a maximum of 20000 images.
-
 This file can be imported as a module and contains the following functions:
 
     * get_array - returns the array of image windows
@@ -24,36 +22,66 @@ def main():
     directory = input("Please enter path of directory containing all of the images: ")
     y_in = int(input("Please enter window height: "))
     x_in = int(input("Please enter window length: "))
+    num_files = int(input("Please enter an upper bound for the number of training files: "))
     out_name = input("Please enter name of target pickle file: ")
 
-    out = get_array(directory, (y_in, x_in))
+    out = get_array(directory, (y_in, x_in), num_files)
     save_pickle(out_name, out)
 
 
 def save_pickle(name, contents):
-    with open(name + ".pkl", "wb") as f:
+    """Convenience function for saving object
+
+    Parameters
+    __________
+    name : str
+        name of pickle file to save to.
+    contents : obj
+        object to save
+    """
+    with open(name, "wb") as f:
         pickle.dump(contents, f)
 
 
 def open_pickle(name):
-    with open(name + ".pkl", "rb") as f:
+    """Convenience function for extracting object
+
+    Parameters
+    __________
+    name : str
+        name of pickle file to load object from
+
+    Returns
+    _______
+    x : object
+        object stored in the pickle file
+    """
+    with open(name, "rb") as f:
         x = pickle.load(f)
     return x
 
-def get_array(path, window_sz):
-    # TODO finish comments
+
+def get_array(path, window_sz, num_files):
     """Combines random windows of image files
 
     Parameters
     __________
     path : str
+        path to folder containing all the images.
+    window_sz : int tuple
+        (height, width) of sampling window.
+    num_files : int
+        Upper bound for the number of images contained.
 
+    Returns
+    _______
+    out
+        numpy array of dimension num_files x window_sz area.  Rows are samples.
     """
     y, x = window_sz
     instances = 0
-    # With the given image sets, it's sometimes unclear how many of the images are the proper size
-    # to generate a window with.  This is a very generous estimate.
-    out = np.zeros((20000, x * y))
+
+    out = np.zeros((num_files, x * y))
     for root, dirs, files in os.walk(path, topdown=False):
         for name in files:
             file_path = os.path.join(root, name)
@@ -75,6 +103,7 @@ def get_array(path, window_sz):
             instances += 1
 
     return out[:instances, :]
+
 
 if __name__ == "__main__":
     main()
