@@ -34,8 +34,8 @@ def pedestrian_scan(model, comp_img, window):
     x = np.zeros(1000)
     y = np.zeros(1000)
     k = 0
-    for r in range(0, comp_img.shape[0] - w_r, 2):
-        for c in range(0, comp_img.shape[1] - w_c, 2):
+    for r in range(0, comp_img.shape[0] - w_r + 1, 2):
+        for c in range(0, comp_img.shape[1] - w_c + 1, 2):
             bound = comp_img[r: r + w_r, c: c + w_c]
             val = model.predict(hog(bound, 9, (8, 8), (2, 2), visualize=False, feature_vector=True).reshape(1, -1))
             if val == 1:
@@ -53,7 +53,7 @@ def pedestrian_scan(model, comp_img, window):
 def get_im_pyramid(image):
     rows, cols = image.shape
     pyramid = tuple(pyramid_gaussian(image, max_layer=(m.floor(m.log(rows, 2)-2)), downscale=2, multichannel=False))
-    composite_image = np.zeros((rows, cols + cols // 2))
+    composite_image = np.zeros((rows, cols + cols // 2 + 1))
     composite_image[:rows, :cols] = pyramid[0]
     i_row = 0
 
