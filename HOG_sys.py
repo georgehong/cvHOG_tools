@@ -45,7 +45,7 @@ def pedestrian_scan(model, comp_img, window):
     fig, ax = plt.subplots(1)
     ax.imshow(comp_img)
     for j in range(k + 1):
-        rect = patches.Rectangle((y[j], x[j]), 64, 128, linewidth=1, edgecolor='r', facecolor='none')
+        rect = patches.Rectangle((x[j], y[j]), 64, 128, linewidth=1, edgecolor='r', facecolor='none')
         ax.add_patch(rect)
     plt.show()
 
